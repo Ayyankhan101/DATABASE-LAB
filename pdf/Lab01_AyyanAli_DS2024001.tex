@@ -9,6 +9,7 @@
 \usepackage{amssymb}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
+\usepackage{url}
 
 % Set page margins - use more balanced margins
 \geometry{a4paper, left=0.8in, right=0.8in, top=1in, bottom=1in}
@@ -90,7 +91,6 @@ WHERE rating > 4.0
 ORDER BY rating DESC;
 \end{lstlisting}
 
-\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
 
 \textbf{Explanation:} This query finds all highly-rated books (above 4.0) and sorts them by rating. Shows books that met this criteria, with the highest rated at the top.
 
@@ -106,7 +106,6 @@ GROUP BY category
 ORDER BY average_rating DESC;
 \end{lstlisting}
 
-\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
 
 \textbf{Explanation:} This query groups books by category and calculates the count of books and average rating in each category. Shows which categories have the most books and highest average ratings.
 
@@ -123,7 +122,6 @@ ORDER BY date_finished DESC
 LIMIT 10;
 \end{lstlisting}
 
-\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
 
 \textbf{Explanation:} This query retrieves the 10 most recently finished books, sorted by completion date in descending order. Shows your latest reading accomplishments.
 
@@ -140,7 +138,6 @@ WHERE date_finished IS NOT NULL AND date_started IS NOT NULL
 ORDER BY days_to_complete ASC;
 \end{lstlisting}
 
-\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
 
 \textbf{Explanation:} This query calculates how many days it took to read each book by subtracting the start date from the finish date. Shows which books were completed fastest.
 
@@ -157,7 +154,6 @@ WHERE (rating >= 4.5 OR category = 'Fiction')
 ORDER BY rating DESC;
 \end{lstlisting}
 
-\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
 
 \textbf{Explanation:} This query finds books that are either highly rated (4.5+) OR in the Fiction category, AND were started within the last 6 months. Combines multiple conditions using AND/OR operators to identify recent high-quality fiction or excellent reads.
 
@@ -562,5 +558,8 @@ This lab exercise helped me understand the importance of analytical queries in e
 \end{itemize}
 
 Working with AI tools enhanced my learning experience by providing immediate feedback and helping me overcome technical challenges. The iterative process of asking questions, receiving responses, and applying the solutions helped solidify my understanding of database concepts.
+
+\vspace{0.5cm}
+\noindent \textbf{GitHub Repository:} The code and resources for this lab can be found at: \url{https://github.com/Ayyankhan101/DATABASE-LAB.git}
 
 \end{document}
