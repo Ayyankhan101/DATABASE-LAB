@@ -1,7 +1,7 @@
 # Database Systems Laboratory - Semester 4
 
 ## Course Information
-**Course:** Database Systems Laboratory | **Semester:** Spring 2026 | **Student:** M Ayyan Khan | **ID:** DS2024001
+**Course:** Database Systems Laboratory | **Semester:** Spring 2026 | **Student:** M Ayyan Khan |
 
 ---
 
