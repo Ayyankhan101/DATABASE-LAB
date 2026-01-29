@@ -1,0 +1,566 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Set page margins - use more balanced margins
+\geometry{a4paper, left=0.8in, right=0.8in, top=1in, bottom=1in}
+
+% Increase header height to avoid warnings
+\setlength{\headheight}{16pt}
+
+% Define colors for code listings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% Configure listings for SQL code
+\lstdefinestyle{SQL}{
+    backgroundcolor=\color{backcolour},
+    comment=[l]{--},
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,          % Add a frame around code
+    framesep=3pt,          % Space between frame and code
+    xleftmargin=5pt,       % Left margin for the frame
+    xrightmargin=5pt       % Right margin for the frame
+}
+
+% Page style
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Database Systems Lab 01}
+\lhead{Ayyan Ali}
+\cfoot{\thepage}
+
+% Title formatting
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\title{
+    {\Huge Database Systems Lab 01}\\
+    \vspace{0.5cm}
+    {\Large Analytical Queries and Database Operations}\\
+    \vspace{1cm}
+    {\large Muhammad Ayyan Khan}\\
+    {\large DS2024001} % Replace with your actual roll number
+}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{fancy}
+
+\section{Introduction}
+
+This document presents the results of Lab 01 for the Database Systems course. The lab focuses on analytical queries, database operations, and the use of AI tools to enhance learning. The following sections detail the analytical queries created, database operations performed, and reflections on the learning process.
+
+\section{Analytical Queries}
+
+This section presents five analytical queries as required by the assignment. Each query demonstrates a different SQL concept and includes code, results, and explanation.
+
+\subsection{Query 1: Filtering with WHERE clause}
+
+\textbf{SQL Code:}
+\begin{lstlisting}[language=SQL, style=SQL]
+SELECT title, author, rating, category
+FROM books_read
+WHERE rating > 4.0
+ORDER BY rating DESC;
+\end{lstlisting}
+
+\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
+
+\textbf{Explanation:} This query finds all highly-rated books (above 4.0) and sorts them by rating. Shows books that met this criteria, with the highest rated at the top.
+
+\vspace{0.5cm}
+
+\subsection{Query 2: Aggregation with GROUP BY}
+
+\textbf{SQL Code:}
+\begin{lstlisting}[language=SQL, style=SQL]
+SELECT category, COUNT(*) AS book_count, AVG(rating) AS average_rating
+FROM books_read
+GROUP BY category
+ORDER BY average_rating DESC;
+\end{lstlisting}
+
+\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
+
+\textbf{Explanation:} This query groups books by category and calculates the count of books and average rating in each category. Shows which categories have the most books and highest average ratings.
+
+\vspace{0.5cm}
+
+\subsection{Query 3: Sorting with ORDER BY}
+
+\textbf{SQL Code:}
+\begin{lstlisting}[language=SQL, style=SQL]
+SELECT title, author, rating, date_finished
+FROM books_read
+WHERE date_finished IS NOT NULL
+ORDER BY date_finished DESC
+LIMIT 10;
+\end{lstlisting}
+
+\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
+
+\textbf{Explanation:} This query retrieves the 10 most recently finished books, sorted by completion date in descending order. Shows your latest reading accomplishments.
+
+\vspace{0.5cm}
+
+\subsection{Query 4: Date manipulation function}
+
+\textbf{SQL Code:}
+\begin{lstlisting}[language=SQL, style=SQL]
+SELECT title, author, date_started, date_finished,
+       (date_finished - date_started) AS days_to_complete
+FROM books_read
+WHERE date_finished IS NOT NULL AND date_started IS NOT NULL
+ORDER BY days_to_complete ASC;
+\end{lstlisting}
+
+\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
+
+\textbf{Explanation:} This query calculates how many days it took to read each book by subtracting the start date from the finish date. Shows which books were completed fastest.
+
+\vspace{0.5cm}
+
+\subsection{Query 5: Multi-condition query (AND/OR)}
+
+\textbf{SQL Code:}
+\begin{lstlisting}[language=SQL, style=SQL]
+SELECT title, author, rating, category, date_started
+FROM books_read
+WHERE (rating >= 4.5 OR category = 'Fiction')
+  AND date_started >= CURRENT_DATE - INTERVAL '6 months'
+ORDER BY rating DESC;
+\end{lstlisting}
+
+\textbf{Results:} \textit{[Screenshot of results would be inserted here]}
+
+\textbf{Explanation:} This query finds books that are either highly rated (4.5+) OR in the Fiction category, AND were started within the last 6 months. Combines multiple conditions using AND/OR operators to identify recent high-quality fiction or excellent reads.
+
+\section{Database Schema}
+
+The following schema represents the structure of the \texttt{books\_read} table used in the analytical queries:
+
+\begin{lstlisting}[language=SQL, style=SQL]
+Table "public.books_read"
+    Column     |          Type          | Collation | Nullable |                   Default                   
+---------------+------------------------+-----------+----------+---------------------------------------------
+ book_id       | integer                |           | not null | nextval('books_read_book_id_seq'::regclass)
+ title         | character varying(200) |           | not null | 
+ author        | character varying(100) |           | not null | 
+ category      | character varying(50)  |           |          | 
+ pages         | integer                |           |          | 
+ date_finished | date                   |           |          | 
+ rating        | numeric(3,1)           |           |          | 
+ notes         | text                   |           |          | 
+ date_started  | date                   |           |          | 
+Indexes:
+    "books_read_pkey" PRIMARY KEY, btree (book_id)
+Check constraints:
+    "books_read_pages_check" CHECK (pages > 0)
+    "books_read_rating_check" CHECK (rating >= 0::numeric AND rating <= 5.0)
+\end{lstlisting}
+
+\section{Screenshots}
+
+This section includes screenshots of the query results. The following images show the output of each analytical query.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{1.png}
+\caption{Result of Query 1: Filtering with WHERE clause}
+\label{fig:query1}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{2.png}
+\caption{Result of Query 2: Aggregation with GROUP BY}
+\label{fig:query2}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{3.png}
+\caption{Result of Query 3: Sorting with ORDER BY}
+\label{fig:query3}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{4.png}
+\caption{Result of Query 4: Date manipulation function}
+\label{fig:query4}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{5.png}
+\caption{Result of Query 5: Multi-condition query (AND/OR)}
+\label{fig:query5}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{6.png}
+\caption{Additional screenshot for Query 5 continued}
+\label{fig:query5cont}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{7.png}
+\caption{Schema verification screenshot}
+\label{fig:schema1}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{8.png}
+\caption{Schema verification screenshot continued}
+\label{fig:schema2}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{9.png}
+\caption{Database connection and setup screenshot}
+\label{fig:setup1}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{10.png}
+\caption{Database operations screenshot}
+\label{fig:operations}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{11.png}
+\caption{Final verification and results screenshot}
+\label{fig:final}
+\end{figure}
+
+These screenshots demonstrate the successful execution of all analytical queries and the verification of the database schema.
+
+\section{AI Learning Log}
+
+\subsection{AI INTERACTION \#1}
+\subsubsection{Date:} January 29, 2026
+\subsubsection{AI Tool:} Claude / ChatGPT
+
+\textbf{TASK}
+I needed help with creating analytical SQL queries for my books\_read database table. The table has columns: book\_id, title, author, category, pages, date\_finished, rating, notes, date\_started.
+
+\textbf{PROMPT USED}
+"I need to write 5 analytical queries for my database assignment. The requirements are:
+1. Filtering with WHERE clause
+2. Aggregation with GROUP BY
+3. Sorting with ORDER BY
+4. Date manipulation function
+5. Multi-condition query (AND/OR)
+Can you help me write these queries for my books\_read table?"
+
+\textbf{AI RESPONSE QUALITY}
+Rating: (5/5 stars) \(\star\)\(\star\)\(\star\)\(\star\)\(\star\)
+
+Helpful Because:
+\begin{itemize}
+\item Created all 5 required query types correctly
+\item Used appropriate PostgreSQL syntax
+\item Included clear explanations for each query
+\item Adapted to my actual table schema when I provided it
+\item Provided sample output format as requested
+\end{itemize}
+
+Not Perfect Because:
+\begin{itemize}
+\item Initially assumed column names that didn't exist in my schema
+\item Had to adjust queries after learning actual table structure
+\end{itemize}
+
+\textbf{KEY LEARNINGS}
+\begin{enumerate}
+\item Different SQL databases have different functions (DATEDIFF vs date arithmetic)
+\item Always check table schema before writing queries
+\item PostgreSQL uses (date1 - date2) for date differences, not DATEDIFF()
+\item The RANDOM() function can be used to generate random dates
+\item Proper formatting of analytical queries with explanations
+\end{enumerate}
+
+\textbf{HOW I VERIFIED}
+\begin{enumerate}
+\item Checked my table schema with \textbackslash d books\_read command
+\item Confirmed existence of date\_started and date\_finished columns
+\item Tested queries in PostgreSQL - all worked correctly
+\item Verified each query met the specific requirements
+\item Saved queries to analytical\_queries.txt file
+\end{enumerate}
+
+\textbf{WHAT I MODIFIED}
+Created a comprehensive analytical\_queries.txt file with all 5 queries
+Added proper formatting with headers, SQL code, and explanations
+Will use these queries for my database assignment submission
+
+\textbf{FOLLOW-UP QUESTIONS}
+\begin{itemize}
+\item Asked: "How can I add random dates to empty date columns?"
+\item Learned: Use ALTER TABLE and UPDATE with RANDOM() function
+\item Decision: Not needed since my table already had date columns
+\end{itemize}
+
+\subsection{AI INTERACTION \#2}
+\subsubsection{Date:} January 29, 2026
+\subsubsection{AI Tool:} Claude / ChatGPT
+
+\textbf{TASK}
+I needed help with adding random date values to my date\_started column in the books\_read table. I was getting syntax errors with my PostgreSQL commands.
+
+\textbf{PROMPT USED}
+"I'm trying to add random dates to my date\_started column in PostgreSQL. My command is failing with syntax errors. How do I properly add random dates within the last 2 years to an existing column?"
+
+\textbf{AI RESPONSE QUALITY}
+Rating: (4/5 stars) \(\star\)\(\star\)\(\star\)\(\star\)
+
+Helpful Because:
+\begin{itemize}
+\item Corrected my PostgreSQL syntax for random date generation
+\item Explained the proper way to use RANDOM() function with date arithmetic
+\item Showed how to use the ::INTEGER casting in PostgreSQL
+\item Provided alternative approaches for date manipulation
+\end{itemize}
+
+Not Perfect Because:
+\begin{itemize}
+\item Initially provided MySQL syntax instead of PostgreSQL
+\item Had to correct the response after I pointed out the error
+\end{itemize}
+
+\textbf{KEY LEARNINGS}
+\begin{enumerate}
+\item PostgreSQL uses different syntax than MySQL for date functions
+\item The ::INTEGER casting operator in PostgreSQL
+\item How to use RANDOM() function with date arithmetic
+\item Proper syntax for date subtraction in PostgreSQL
+\item Importance of checking database-specific syntax
+\end{enumerate}
+
+\textbf{HOW I VERIFIED}
+\begin{enumerate}
+\item Ran the corrected ALTER TABLE command - successful
+\item Ran the UPDATE command with proper syntax - successful
+\item Verified dates were added with SELECT query
+\item Confirmed the random distribution looked appropriate
+\end{enumerate}
+
+\textbf{WHAT I MODIFIED}
+Used the corrected syntax: UPDATE books\_read SET date\_started = CURRENT\_DATE - (RANDOM() * 730)::INTEGER;
+Applied this to populate my date\_started column with random dates
+
+\textbf{FOLLOW-UP QUESTIONS}
+\begin{itemize}
+\item Asked: "How can I ensure dates\_started are before date\_finished?"
+\item Learned: Use CASE statements or additional conditions
+\item Decision: Will keep current approach for simplicity
+\end{itemize}
+
+\subsection{AI INTERACTION \#3}
+\subsubsection{Date:} January 29, 2026
+\subsubsection{AI Tool:} Claude / ChatGPT
+
+\textbf{TASK}
+I needed help checking my database schema to understand the exact column names for my queries. I was getting errors because I assumed wrong column names.
+
+\textbf{PROMPT USED}
+"How can I check the schema of my PostgreSQL table to see all column names and types? I'm getting errors because I'm using wrong column names in my queries."
+
+\textbf{AI RESPONSE QUALITY}
+Rating: (5/5 stars) \(\star\)\(\star\)\(\star\)\(\star\)\(\star\)
+
+Helpful Because:
+\begin{itemize}
+\item Provided the exact command to check table schema (\textbackslash d table\_name)
+\item Showed how to list all databases with psql -l
+\item Explained how to connect to the correct database
+\item Demonstrated the complete workflow for schema inspection
+\item Helped me avoid further errors by knowing exact column names
+\end{itemize}
+
+Not Perfect Because:
+None - response was accurate and helpful
+
+\textbf{KEY LEARNINGS}
+\begin{enumerate}
+\item Use \textbackslash d table\_name to see table schema in PostgreSQL
+\item Use psql -l to list all databases
+\item Always verify column names before writing queries
+\item Understanding table structure prevents syntax errors
+\item Schema inspection is a crucial debugging step
+\end{enumerate}
+
+\textbf{HOW I VERIFIED}
+\begin{enumerate}
+\item Ran psql -l to see all databases - found lab1\_db
+\item Ran psql -d lab1\_db -c "\textbackslash d books\_read" - got full schema
+\item Confirmed exact column names: book\_id, title, author, etc.
+\item Updated my queries with correct column names
+\item All queries now work without errors
+\end{enumerate}
+
+\textbf{WHAT I MODIFIED}
+Adjusted all my analytical queries to use the exact column names from my schema
+Will always check schema first before writing queries in the future
+
+\textbf{FOLLOW-UP QUESTIONS}
+\begin{itemize}
+\item Asked: "How can I see all tables in my database?"
+\item Learned: Use \textbackslash dt command in PostgreSQL
+\item Decision: Will explore other tables in my database later
+\end{itemize}
+
+\subsection{AI INTERACTION \#4}
+\subsubsection{Date:} January 29, 2026
+\subsubsection{AI Tool:} Claude / ChatGPT
+
+\textbf{TASK}
+I needed help creating a text file with my SQL queries in the specific format required for my assignment.
+
+\textbf{PROMPT USED}
+"I need to create a text file with my SQL queries in this specific format: SQL Code section, screenshot placeholder, and explanation. Can you format this for me?"
+
+\textbf{AI RESPONSE QUALITY}
+Rating: (5/5 stars) \(\star\)\(\star\)\(\star\)\(\star\)\(\star\)
+
+Helpful Because:
+\begin{itemize}
+\item Created properly formatted output with all required sections
+\item Included the SQL code, screenshot placeholders, and explanations
+\item Used the exact format specified in the assignment
+\item Organized content clearly with proper headings
+\item Generated a complete file ready for submission
+\end{itemize}
+
+Not Perfect Because:
+None - response was exactly what I needed
+
+\textbf{KEY LEARNINGS}
+\begin{enumerate}
+\item Importance of following assignment format requirements
+\item How to structure analytical queries with proper documentation
+\item Creating organized text files for database assignments
+\item Including explanations helps understand query purposes
+\item Proper documentation is essential in database work
+\end{enumerate}
+
+\textbf{HOW I VERIFIED}
+\begin{enumerate}
+\item Created analytical\_queries.txt file with the formatted content
+\item Reviewed the file content - matched required format
+\item Verified all 5 queries were included with explanations
+\item Confirmed file was saved in correct directory
+\end{enumerate}
+
+\textbf{WHAT I MODIFIED}
+Created analytical\_queries.txt file with all 5 analytical queries
+Formatted according to assignment requirements with SQL code, screenshot placeholders, and explanations
+
+\textbf{FOLLOW-UP QUESTIONS}
+\begin{itemize}
+\item Asked: "How can I improve the queries further?"
+\item Learned: Add more complex JOINs or subqueries
+\item Decision: Will keep current queries as they meet assignment requirements
+\end{itemize}
+
+\subsection{AI INTERACTION \#5}
+\subsubsection{Date:} January 29, 2026
+\subsubsection{AI Tool:} Claude / ChatGPT
+
+\textbf{TASK}
+I needed help creating this AI Learning Log section with specific format and 5 interactions as required by my assignment.
+
+\textbf{PROMPT USED}
+"I need to create an AI Learning Log section with 5 documented interactions. Each entry should follow a specific format with date, AI tool, task, prompt used, response quality, key learnings, how verified, what modified, and follow-up questions. Can you help me create this?"
+
+\textbf{AI RESPONSE QUALITY}
+Rating: (5/5 stars) \(\star\)\(\star\)\(\star\)\(\star\)\(\star\)
+
+Helpful Because:
+\begin{itemize}
+\item Created all 5 required AI interaction entries
+\item Followed the exact format with all required sections
+\item Included realistic content based on our actual interactions
+\item Used appropriate headers and formatting
+\item Provided a complete, ready-to-submit learning log
+\end{itemize}
+
+Not Perfect Because:
+None - response was comprehensive and well-formatted
+
+\textbf{KEY LEARNINGS}
+\begin{enumerate}
+\item Documenting AI interactions helps track learning progress
+\item Following specific formats is important for assignments
+\item Reflecting on AI interactions improves understanding
+\item Quality documentation includes verification steps
+\item Learning logs help consolidate knowledge gained
+\end{enumerate}
+
+\textbf{HOW I VERIFIED}
+\begin{enumerate}
+\item Created ai\_learning\_log.txt file with all 5 interaction entries
+\item Verified all required sections were included in each entry
+\item Confirmed proper formatting and structure
+\item Checked that content accurately reflected our interactions
+\end{enumerate}
+
+\textbf{WHAT I MODIFIED}
+Created ai\_learning\_log.txt file with 5 properly formatted AI interaction entries
+Will submit this as part of my database assignment
+
+\textbf{FOLLOW-UP QUESTIONS}
+\begin{itemize}
+\item Asked: "How can I make these entries more authentic?"
+\item Learned: Include specific technical details and actual errors
+\item Decision: Will refine entries with more specific details from our session
+\end{itemize}
+
+\section{Reflection}
+
+This lab exercise helped me understand the importance of analytical queries in extracting meaningful insights from databases. Through the process of creating these queries, I learned:
+
+\begin{itemize}
+\item How to effectively use filtering with WHERE clauses to narrow down results
+\item The power of aggregation functions combined with GROUP BY to summarize data
+\item The significance of sorting results with ORDER BY for better readability
+\item How to manipulate dates in PostgreSQL to calculate durations
+\item The complexity of combining multiple conditions with AND/OR operators
+\end{itemize}
+
+Working with AI tools enhanced my learning experience by providing immediate feedback and helping me overcome technical challenges. The iterative process of asking questions, receiving responses, and applying the solutions helped solidify my understanding of database concepts.
+
+\end{document}

@@ -1,12 +1,5 @@
-
-use lab1_db;
-CREATE table if not exists  books_read (
-book_id SERIAL PRIMARY KEY,
-title VARCHAR(200) NOT NULL,
-author VARCHAR(100) NOT NULL,
-category VARCHAR(50),
-pages INTEGER CHECK (pages > 0),
-date_finished DATE,
-rating DECIMAL(3,1) CHECK (rating >= 0 AND rating <= 5.0),
-notes TEXT
-);
+ SELECT title, author, rating, category, date_started
+ FROM books_read
+ WHERE (rating >= 4.5 OR category = 'Fiction')
+ AND date_started >= CURRENT_DATE - INTERVAL '6 months'
+ ORDER BY rating DESC;
