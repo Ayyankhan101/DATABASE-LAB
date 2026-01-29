@@ -1,0 +1,66 @@
+Query 1: Filtering with WHERE clause
+-------------------------------
+SQL Code:
+SELECT title, author, rating, category
+FROM books_read
+WHERE rating > 4.0
+ORDER BY rating DESC;
+
+Results: [screenshot]
+
+Explanation: This query finds all highly-rated books (above 4.0) and sorts them by rating. Shows books that met this criteria, with the highest rated at the top.
+
+
+Query 2: Aggregation with GROUP BY
+-------------------------------
+SQL Code:
+SELECT category, COUNT(*) AS book_count, AVG(rating) AS average_rating
+FROM books_read
+GROUP BY category
+ORDER BY average_rating DESC;
+
+Results: [screenshot]
+
+Explanation: This query groups books by category and calculates the count of books and average rating in each category. Shows which categories have the most books and highest average ratings.
+
+
+Query 3: Sorting with ORDER BY
+-------------------------------
+SQL Code:
+SELECT title, author, rating, date_finished
+FROM books_read
+WHERE date_finished IS NOT NULL
+ORDER BY date_finished DESC
+LIMIT 10;
+
+Results: [screenshot]
+
+Explanation: This query retrieves the 10 most recently finished books, sorted by completion date in descending order. Shows your latest reading accomplishments.
+
+
+Query 4: Date manipulation function
+-------------------------------
+SQL Code:
+SELECT title, author, date_started, date_finished,
+       (date_finished - date_started) AS days_to_complete
+FROM books_read
+WHERE date_finished IS NOT NULL AND date_started IS NOT NULL
+ORDER BY days_to_complete ASC;
+
+Results: [screenshot]
+
+Explanation: This query calculates how many days it took to read each book by subtracting the start date from the finish date. Shows which books were completed fastest.
+
+
+Query 5: Multi-condition query (AND/OR)
+-------------------------------
+SQL Code:
+SELECT title, author, rating, category, date_started
+FROM books_read
+WHERE (rating >= 4.5 OR category = 'Fiction')
+  AND date_started >= CURRENT_DATE - INTERVAL '6 months'
+ORDER BY rating DESC;
+
+Results: [screenshot]
+
+Explanation: This query finds books that are either highly rated (4.5+) OR in the Fiction category, AND were started within the last 6 months. Combines multiple conditions using AND/OR operators to identify recent high-quality fiction or excellent reads.
