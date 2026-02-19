@@ -33,6 +33,10 @@ DATABASE-LAB/
 ├── analytical_queries.txt    # Advanced analytical queries
 ├── lab01_db.sql             # Laboratory exercise 1
 ├── lab1_schema.sql          # Schema definitions
+├── lab2/                     # Laboratory exercise 2
+│   ├── ecommerce_setup.sql  # E-commerce dataset schema and data
+│   ├── queries.sql          # 10 SQL exercises
+│   └── week2.pdf            # Lab instructions
 ├── pdf/                     # Supporting documentation
 │   ├── *.png               # Diagrams and visual aids
 │   └── *.aux, *.log        # LaTeX compilation files
@@ -44,14 +48,24 @@ DATABASE-LAB/
 ## Laboratory Exercises
 
 ### Lab 01: Database Fundamentals and Schema Design
-- **File:** `lab01_db.sql`
-- **File:** `lab1_schema.sql`
+- **Files:** `lab01_db.sql`, `lab1_schema.sql`
 - **Focus Areas:**
   - Database schema creation
   - Table design and normalization
   - Primary and foreign key relationships
   - Basic CRUD operations
   - Data integrity constraints
+
+### Lab 02: E-Commerce Data Queries
+- **Files:** `lab2/ecommerce_setup.sql`, `lab2/queries.sql`
+- **Focus Areas:**
+  - SELECT statements with filtering and sorting
+  - Pattern matching with LIKE/ILIKE
+  - NULL handling in queries
+  - Computed columns and aggregate functions
+  - CASE expressions for conditional logic
+  - Query optimization concepts
+- **Dataset:** E-commerce schema with customers, products, orders, and order_items tables
 
 ---
 
