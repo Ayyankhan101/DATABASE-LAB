@@ -37,9 +37,14 @@ DATABASE-LAB/
 │   ├── ecommerce_setup.sql  # E-commerce dataset schema and data
 │   ├── queries.sql          # 10 SQL exercises
 │   └── week2.pdf            # Lab instructions
-├── pdf/                     # Supporting documentation
-│   ├── *.png               # Diagrams and visual aids
+├── pdf/                     # Lab 01 documentation
+│   ├── Lab01_Ayyan_DS2024001.tex  # Lab 01 LaTeX report
+│   ├── *.png               # Lab 01 screenshots
 │   └── *.aux, *.log        # LaTeX compilation files
+├── pdf2/                    # Lab 02 documentation
+│   ├── lab02_report.tex    # Lab 02 LaTeX report (query explanations)
+│   ├── reference.tex       # Reference document template
+│   └── *.png               # Lab 02 query screenshots (10 images)
 └── .git/                    # Version control metadata
 ```
 
@@ -58,6 +63,7 @@ DATABASE-LAB/
 
 ### Lab 02: E-Commerce Data Queries
 - **Files:** `lab2/ecommerce_setup.sql`, `lab2/queries.sql`
+- **Documentation:** `pdf2/lab02_report.tex`
 - **Focus Areas:**
   - SELECT statements with filtering and sorting
   - Pattern matching with LIKE/ILIKE
@@ -66,6 +72,7 @@ DATABASE-LAB/
   - CASE expressions for conditional logic
   - Query optimization concepts
 - **Dataset:** E-commerce schema with customers, products, orders, and order_items tables
+- **Tools:** DBeaver 25.3.3 (GUI) and psql (CLI)
 
 ---
 
