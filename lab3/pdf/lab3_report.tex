@@ -1,0 +1,496 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{float}
+
+% Page geometry
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm
+}
+
+% Color scheme for code listings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% SQL listing style
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=SQL,
+    morekeywords={SELECT, FROM, WHERE, GROUP, BY, HAVING, ORDER, JOIN, ON, AS, COUNT, SUM, AVG, MAX, MIN, DISTINCT, CASE, WHEN, THEN, ELSE, END, WITH, OVER, PARTITION, ROWNUMBER, RANK, DENSERANK, LAG, LEAD, LIMIT, LEFT, RIGHT, INNER, OUTER, AND, OR, NOT, IN, BETWEEN, LIKE, IS, NULL, TRUE, FALSE, CAST, ROUND, COALESCE, TOCHAR, DECIMAL, VARCHAR, BOOLEAN, INTEGER, DATE, INSERT, INTO, VALUES, CREATE, TABLE, PRIMARY, KEY, REFERENCES, FOREIGN, DROP, IF, EXISTS, DEFAULT, NOT, NULL, UNIQUE, INDEX, VIEW, TRIGGER, FUNCTION, PROCEDURE, DECLARE, BEGIN, COMMIT, ROLLBACK, TRANSACTION, ASC, DESC, NULLS, FIRST, LAST, ROWS, RANGE, UNBOUNDED, PRECEDING, FOLLOWING, CURRENT, ROW, FULL, CROSS, NATURAL, USING, UNION, INTERSECT, EXCEPT, ALL, ANY, SOME, EXISTS, UNIQUE, GROUPING, CUBE, ROLLUP, PIVOT, UNPIVOT, MATCH, RECOGNIZE, MEASURES, AFTER, MATCH, RUNNING, FINAL, PER, ROW, SKIP, PAST, LAST, ROW, DEFINE, PATTERN, QUANTIFIER, SUBSET, WINDOW, PARTITION, ORDER, BY, ROWS, RANGE, GROUPS, EXCLUDE, OTHERS, TIES, NO, OTHERS, UNBOUNDED, PRECEDING, FOLLOWING, CURRENT, ROW},
+    literate={_}{{\textunderscore}}1
+}
+
+\lstset{style=sqlstyle}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textsc{Database Systems Lab}}
+\fancyhead[R]{\textsc{Lab 03}}
+\fancyfoot[C]{\thepage}
+
+% Title formatting
+\titleformat{\section}{\large\bfseries\scshape}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Lab 03: Advanced SQL Queries},
+    pdfauthor={Mistral Vibe}
+}
+
+% Document info
+\title{\textbf{\Large Database Systems Lab — Week 03}\\[0.5cm]
+\Large Advanced SQL: Aggregations \& Analytics}
+\author{Mistral Vibe}
+\date{February 20, 2024}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent This lab explores advanced SQL concepts including aggregate functions, \texttt{GROUP BY} and \texttt{HAVING} clauses, window functions (\texttt{ROW\_NUMBER}, \texttt{RANK}, \texttt{LAG}), and Common Table Expressions (CTEs). Through 10 comprehensive queries on an e-commerce dataset, we demonstrate practical applications of these techniques for business intelligence and data analysis.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+This lab focuses on advanced SQL concepts essential for data analysis and business intelligence:
+\begin{itemize}[noitemsep]
+    \item Aggregate functions (\texttt{COUNT}, \texttt{SUM}, \texttt{AVG}, \texttt{MIN}, \texttt{MAX})
+    \item \texttt{GROUP BY} and \texttt{HAVING} clauses
+    \item Window functions (\texttt{ROW\_NUMBER}, \texttt{RANK}, \texttt{DENSE\_RANK}, \texttt{LAG}, \texttt{LEAD})
+    \item Common Table Expressions (CTEs)
+    \item Time-series and cohort analysis
+\end{itemize}
+
+\section{Dataset Extension}
+
+The lab extends the e-commerce dataset with a \texttt{user\_sessions} table that tracks user behavior:
+
+\begin{lstlisting}[caption={User Sessions Table Schema}, label=lst:schema]
+CREATE TABLE user_sessions (
+    session_id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES customers(customer_id),
+    session_date DATE NOT NULL,
+    pages_viewed INTEGER NOT NULL DEFAULT 1,
+    duration_mins DECIMAL(6,2) NOT NULL,
+    device VARCHAR(20) NOT NULL,
+    converted BOOLEAN NOT NULL DEFAULT FALSE
+);
+\end{lstlisting}
+
+\noindent This table enables analysis of user engagement and conversion funnels.
+
+\section{Queries}
+
+\subsection{Query 1: Overall Business Summary}
+
+This query computes key performance indicators (KPIs) for delivered orders.
+
+\begin{lstlisting}[caption={Overall Business Summary Query}, label=lst:q1]
+SELECT COUNT(*) AS total_orders,
+       SUM(total_amount) AS total_revenue,
+       ROUND(AVG(total_amount), 2) AS avg_order_value,
+       MAX(total_amount) AS largest_order
+FROM orders
+WHERE status = 'delivered';
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} Aggregate functions, \texttt{WHERE} clause, \texttt{ROUND}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query1-Overall-business-summary.png}
+    \caption{Overall Business Summary Results}
+    \label{fig:q1}
+\end{figure}
+
+\subsection{Query 2: Revenue by Product Category}
+
+Analyzes revenue contribution across product categories using joins and aggregation.
+
+\begin{lstlisting}[caption={Revenue by Product Category Query}, label=lst:q2]
+SELECT p.category,
+       COUNT(DISTINCT oi.order_id) AS orders_containing,
+       SUM(oi.quantity * oi.unit_price) AS category_revenue
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+GROUP BY p.category
+ORDER BY category_revenue DESC;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} \texttt{JOIN}, \texttt{GROUP BY}, \texttt{DISTINCT}, aggregation
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query 2—Revenu-by-product-category.png}
+    \caption{Revenue by Product Category}
+    \label{fig:q2}
+\end{figure}
+
+\subsection{Query 3: Monthly Order Volume and Revenue}
+
+Time-series aggregation to track business performance over time.
+
+\begin{lstlisting}[caption={Monthly Order Volume and Revenue Query}, label=lst:q3]
+SELECT TO_CHAR(order_date, 'YYYY-MM') AS month,
+       COUNT(*) AS num_orders,
+       SUM(total_amount) AS monthly_revenue
+FROM orders
+GROUP BY TO_CHAR(order_date, 'YYYY-MM')
+ORDER BY month;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} Date formatting (\texttt{TO\_CHAR}), time-series grouping
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query 3—Monthly-order-volume-and-revenue.png}
+    \caption{Monthly Order Volume and Revenue Trend}
+    \label{fig:q3}
+\end{figure}
+
+\subsection{Query 4: Active Cities (HAVING Clause)}
+
+Identifies cities with more than 2 orders using the \texttt{HAVING} clause.
+
+\begin{lstlisting}[caption={Active Cities Query}, label=lst:q4]
+SELECT c.city,
+       COUNT(DISTINCT c.customer_id) AS customers,
+       COUNT(o.order_id) AS total_orders
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.city
+HAVING COUNT(o.order_id) > 2
+ORDER BY total_orders DESC;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} \texttt{HAVING} vs \texttt{WHERE}, multi-column aggregation
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query-4—HAVING:-active-cities.png}
+    \caption{Active Cities with More Than 2 Orders}
+    \label{fig:q4}
+\end{figure}
+
+\subsection{Query 5: Device Performance with HAVING}
+
+Analyzes user session metrics by device type with conditional aggregation.
+
+\begin{lstlisting}[caption={Device Performance Query}, label=lst:q5]
+SELECT device,
+       COUNT(*) AS total_sessions,
+       ROUND(AVG(duration_mins), 2) AS avg_duration,
+       SUM(CASE WHEN converted THEN 1 ELSE 0 END) AS conversions,
+       ROUND(100.0 * SUM(CASE WHEN converted THEN 1 ELSE 0 END) / COUNT(*), 1) 
+           AS conversion_rate_pct
+FROM user_sessions
+GROUP BY device
+HAVING COUNT(*) >= 5
+ORDER BY avg_duration DESC;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} Conditional aggregation (\texttt{CASE}), percentage calculations
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query-5—Device-performance-with-HAVING.png}
+    \caption{Device Performance Metrics}
+    \label{fig:q5}
+\end{figure}
+
+\subsection{Query 6: Ranking Orders with ROW\_NUMBER}
+
+Demonstrates window functions to rank orders within each customer.
+
+\begin{lstlisting}[caption={Ranking Orders with ROW_NUMBER}, label=lst:q6]
+SELECT customer_id,
+       order_id,
+       order_date,
+       total_amount,
+       ROW_NUMBER() OVER (
+           PARTITION BY customer_id
+           ORDER BY total_amount DESC
+       ) AS rank_within_customer
+FROM orders
+ORDER BY customer_id, rank_within_customer;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} Window functions, \texttt{ROW\_NUMBER()}, \texttt{PARTITION BY}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query-6—Ranking-orders-with-ROW_NUMBER.png}
+    \caption{Customer Orders Ranked by Value}
+    \label{fig:q6}
+\end{figure}
+
+\subsubsection*{Query 6b: Each Customer's Highest-Value Order}
+
+Using CTE with \texttt{ROW\_NUMBER} to find top orders.
+
+\begin{lstlisting}[caption={Highest-Value Order per Customer}, label=lst:q6b]
+WITH ranked_orders AS (
+    SELECT customer_id,
+           order_id,
+           order_date,
+           total_amount,
+           ROW_NUMBER() OVER (
+               PARTITION BY customer_id
+               ORDER BY total_amount DESC
+           ) AS rank_within_customer
+    FROM orders
+)
+SELECT customer_id, order_id, order_date, total_amount
+FROM ranked_orders
+WHERE rank_within_customer = 1
+ORDER BY customer_id;
+\end{lstlisting}
+
+\subsection{Query 7: Overall Revenue Ranking with RANK}
+
+Compares \texttt{RANK} vs \texttt{DENSE\_RANK} for order revenue ranking.
+
+\begin{lstlisting}[caption={Revenue Ranking with RANK and DENSE_RANK}, label=lst:q7]
+SELECT order_id,
+       customer_id,
+       total_amount,
+       RANK() OVER (ORDER BY total_amount DESC) AS rank,
+       DENSE_RANK() OVER (ORDER BY total_amount DESC) AS dense_rank
+FROM orders
+ORDER BY total_amount DESC
+LIMIT 15;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} \texttt{RANK()}, \texttt{DENSE\_RANK()}, window ordering
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query-7—Overall-revenue-ranking-with-RANK.png}
+    \caption{Order Revenue Ranking Comparison}
+    \label{fig:q7}
+\end{figure}
+
+\subsection{Query 8: Month-over-Month Revenue Trend with LAG}
+
+Uses the \texttt{LAG} window function to compute period-over-period changes.
+
+\begin{lstlisting}[caption={Month-over-Month Trend with LAG}, label=lst:q8]
+WITH monthly_revenue AS (
+    SELECT TO_CHAR(order_date, 'YYYY-MM') AS month,
+           SUM(total_amount) AS revenue
+    FROM orders
+    WHERE status = 'delivered'
+    GROUP BY TO_CHAR(order_date, 'YYYY-MM')
+)
+SELECT month,
+       revenue,
+       LAG(revenue) OVER (ORDER BY month) AS prev_month,
+       revenue - LAG(revenue) OVER (ORDER BY month) AS absolute_change,
+       ROUND(
+           100.0 * (revenue - LAG(revenue) OVER (ORDER BY month))
+           / NULLIF(LAG(revenue) OVER (ORDER BY month), 0),
+           1
+       ) AS pct_change
+FROM monthly_revenue
+ORDER BY month;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} CTEs, \texttt{LAG()}, null-safe division (\texttt{NULLIF})
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query-8—Month-over-month-revenue-trend-with-LAG.png}
+    \caption{Month-over-Month Revenue Trend Analysis}
+    \label{fig:q8}
+\end{figure}
+
+\subsection{Query 9: Customer Value Segmentation using CTEs}
+
+Multi-level CTE for customer tier classification and revenue analysis.
+
+\begin{lstlisting}[caption={Customer Value Segmentation}, label=lst:q9]
+WITH customer_spend AS (
+    SELECT c.customer_id,
+           c.name,
+           c.city,
+           COALESCE(SUM(o.total_amount), 0) AS total_spent
+    FROM customers c
+    LEFT JOIN orders o ON c.customer_id = o.customer_id
+    AND o.status = 'delivered'
+    GROUP BY c.customer_id, c.name, c.city
+),
+customer_tiers AS (
+    SELECT *,
+           CASE
+               WHEN total_spent > 30000 THEN 'VIP'
+               WHEN total_spent > 10000 THEN 'High Value'
+               WHEN total_spent > 0 THEN 'Active'
+               ELSE 'Never Purchased'
+           END AS tier
+    FROM customer_spend
+)
+SELECT tier,
+       COUNT(*) AS customers,
+       SUM(total_spent) AS total_revenue,
+       ROUND(100.0 * SUM(total_spent) / SUM(SUM(total_spent)) OVER (), 1) 
+           AS pct_of_revenue
+FROM customer_tiers
+GROUP BY tier
+ORDER BY total_revenue DESC;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} Multi-level CTEs, \texttt{COALESCE}, window aggregates
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pdf/Query-9—Customer-value-segmentation-using-CTEs.png}
+    \caption{Customer Value Segmentation by Tier}
+    \label{fig:q9}
+\end{figure}
+
+\subsection{Query 10: Session-to-Purchase Funnel Analysis}
+
+Complex CTE combining session and order data for funnel metrics.
+
+\begin{lstlisting}[caption={Session-to-Purchase Funnel Analysis}, label=lst:q10]
+WITH session_summary AS (
+    SELECT customer_id,
+           COUNT(*) AS total_sessions,
+           SUM(pages_viewed) AS total_pages,
+           ROUND(AVG(duration_mins), 2) AS avg_duration,
+           SUM(CASE WHEN converted THEN 1 ELSE 0 END) AS converted_sessions
+    FROM user_sessions
+    GROUP BY customer_id
+),
+order_summary AS (
+    SELECT customer_id,
+           COUNT(*) AS total_orders,
+           SUM(total_amount) AS total_spent
+    FROM orders
+    WHERE status = 'delivered'
+    GROUP BY customer_id
+),
+combined AS (
+    SELECT c.name,
+           c.city,
+           s.total_sessions,
+           s.total_pages,
+           s.avg_duration,
+           s.converted_sessions,
+           COALESCE(o.total_orders, 0) AS total_orders,
+           COALESCE(o.total_spent, 0) AS total_spent
+    FROM session_summary s
+    JOIN customers c ON s.customer_id = c.customer_id
+    LEFT JOIN order_summary o ON s.customer_id = o.customer_id
+)
+SELECT name,
+       city,
+       total_sessions,
+       total_pages,
+       avg_duration,
+       total_orders,
+       total_spent,
+       ROUND(
+           CASE WHEN total_sessions > 0
+                THEN 100.0 * total_orders / total_sessions
+                ELSE 0
+           END, 1
+       ) AS orders_per_100_sessions
+FROM combined
+ORDER BY total_sessions DESC, orders_per_100_sessions ASC;
+\end{lstlisting}
+
+\noindent\textbf{Techniques:} Multiple CTEs, funnel analysis, conversion metrics
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pdf/Query-10—Session-to-purchase-funnel-analysis.png}
+    \caption{Session-to-Purchase Funnel Analysis}
+    \label{fig:q10}
+\end{figure}
+
+\section{Summary of Techniques}
+
+\begin{table}[h]
+\centering
+\caption{SQL Techniques Demonstrated in Each Query}
+\label{tab:summary}
+\begin{tabular}{@{}cll@{}}
+\toprule
+\textbf{Query} & \textbf{Primary Technique} & \textbf{Key Functions} \\ \midrule
+1 & Aggregate KPIs & COUNT, SUM, AVG, MAX \\
+2 & Join \& Group By & JOIN, GROUP BY, DISTINCT \\
+3 & Time-series & TO\_CHAR, GROUP BY \\
+4 & HAVING Clause & HAVING, COUNT \\
+5 & Conditional Aggregation & CASE, HAVING \\
+6 & Window Ranking & ROW\_NUMBER, PARTITION BY \\
+7 & Rank Comparison & RANK, DENSE\_RANK \\
+8 & Trend Analysis & LAG, CTE \\
+9 & Customer Segmentation & Multi-level CTE, CASE \\
+10 & Funnel Analysis & Multiple CTEs, JOINs \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\section{Learning Outcomes}
+
+By completing this lab, you should now be able to:
+\begin{itemize}[noitemsep]
+    \item Understand the difference between \texttt{WHERE} and \texttt{HAVING} clauses
+    \item Apply window functions for analytical queries
+    \item Write readable complex queries using CTEs
+    \item Perform time-series and trend analysis
+    \item Build customer segmentation and funnel analysis queries
+    \item Analyze query performance with \texttt{EXPLAIN ANALYZE}
+\end{itemize}
+
+\section*{Appendix: Files}
+
+\begin{itemize}[noitemsep]
+    \item \texttt{lab3\_extension.sql} — Dataset extension script
+    \item \texttt{queries.sql} — All 10 lab queries
+    \item \texttt{performance\_analysis.md} — Query performance documentation
+\end{itemize}
+
+\end{document}

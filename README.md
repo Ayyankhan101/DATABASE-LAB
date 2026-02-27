@@ -36,15 +36,21 @@ DATABASE-LAB/
 ├── lab2/                     # Laboratory exercise 2
 │   ├── ecommerce_setup.sql  # E-commerce dataset schema and data
 │   ├── queries.sql          # 10 SQL exercises
-│   └── week2.pdf            # Lab instructions
+│   ├── week2.pdf            # Lab instructions
+│   └── pdf2/                 # Lab 02 documentation
+├── lab3/                     # Laboratory exercise 3
+│   ├── queries.sql          # SQL queries for Lab 03
+│   ├── lab3_extension.sql   # Extension queries
+│   ├── performance_analysis.md  # Performance analysis report
+│   ├── README.md            # Lab 03 documentation
+│   ├── week3.pdf            # Lab instructions
+│   ├── lab3_report.*        # LaTeX report files (tex, pdf, aux, log, toc, out)
+│   └── pdf/                 # Query result screenshots
 ├── pdf/                     # Lab 01 documentation
 │   ├── Lab01_Ayyan_DS2024001.tex  # Lab 01 LaTeX report
-│   ├── *.png               # Lab 01 screenshots
+│   ├── Lab01_Ayyan.pdf      # Compiled PDF
+│   ├── *.png               # Lab 01 screenshots (12 images)
 │   └── *.aux, *.log        # LaTeX compilation files
-├── pdf2/                    # Lab 02 documentation
-│   ├── lab02_report.tex    # Lab 02 LaTeX report (query explanations)
-│   ├── reference.tex       # Reference document template
-│   └── *.png               # Lab 02 query screenshots (10 images)
 └── .git/                    # Version control metadata
 ```
 
@@ -63,7 +69,7 @@ DATABASE-LAB/
 
 ### Lab 02: E-Commerce Data Queries
 - **Files:** `lab2/ecommerce_setup.sql`, `lab2/queries.sql`
-- **Documentation:** `pdf2/lab02_report.tex`
+- **Documentation:** `lab2/pdf2/`
 - **Focus Areas:**
   - SELECT statements with filtering and sorting
   - Pattern matching with LIKE/ILIKE
@@ -73,6 +79,18 @@ DATABASE-LAB/
   - Query optimization concepts
 - **Dataset:** E-commerce schema with customers, products, orders, and order_items tables
 - **Tools:** DBeaver 25.3.3 (GUI) and psql (CLI)
+
+### Lab 03: Advanced SQL and Performance Analysis
+- **Files:** `lab3/queries.sql`, `lab3/lab3_extension.sql`
+- **Documentation:** `lab3/lab3_report.tex`, `lab3/performance_analysis.md`, `lab3/README.md`
+- **Focus Areas:**
+  - Advanced JOIN operations
+  - Window functions (ROW_NUMBER, RANK, LAG)
+  - Common Table Expressions (CTEs)
+  - HAVING clause for aggregated filtering
+  - Revenue and business metrics analysis
+  - Query performance evaluation
+- **Dataset:** E-commerce analytics with session data, orders, and customer behavior
 
 ---
 
