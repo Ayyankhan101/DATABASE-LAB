@@ -1,0 +1,15 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}%
+\contentsline {section}{\numberline {2}Dataset Extension}{2}{section.2}%
+\contentsline {section}{\numberline {3}Queries}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Query 1: Overall Business Summary}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Query 2: Revenue by Product Category}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Query 3: Monthly Order Volume and Revenue}{4}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Query 4: Active Cities (HAVING Clause)}{4}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Query 5: Device Performance with HAVING}{5}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Query 6: Ranking Orders with ROW\_NUMBER}{6}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Query 7: Overall Revenue Ranking with RANK}{7}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Query 8: Month-over-Month Revenue Trend with LAG}{7}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Query 9: Customer Value Segmentation using CTEs}{8}{subsection.3.9}%
+\contentsline {subsection}{\numberline {3.10}Query 10: Session-to-Purchase Funnel Analysis}{9}{subsection.3.10}%
+\contentsline {section}{\numberline {4}Summary of Techniques}{10}{section.4}%
+\contentsline {section}{\numberline {5}Learning Outcomes}{11}{section.5}%
