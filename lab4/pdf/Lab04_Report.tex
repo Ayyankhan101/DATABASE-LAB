@@ -1,0 +1,893 @@
+% ============================================================================
+% Database Systems Lab — Week 04: JOINs & Relational Data Modelling
+% Lab Report
+% ============================================================================
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tcolorbox}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ============================================================================
+% PAGE SETUP
+% ============================================================================
+\geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Database Systems Lab — Week 04}
+\rfoot{JOINs \& Relational Data Modelling}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ============================================================================
+% COLOR DEFINITIONS
+% ============================================================================
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{primaryblue}{RGB}{0,102,204}
+\definecolor{secondarygray}{RGB}{80,80,80}
+
+% ============================================================================
+% SQL LISTING STYLE
+% ============================================================================
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{primaryblue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{primaryblue},
+    framerule=0.5pt
+}
+\lstset{style=sqlstyle}
+
+% ============================================================================
+% SECTION FORMATTING
+% ============================================================================
+\titleformat{\section}
+  {\Large\bfseries\color{primaryblue}}
+  {\thesection.}{0.5em}
+  {\titlerule[0.8pt]}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{secondarygray}}
+  {\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {\thesubsubsection.}{0.5em}{}
+
+\titlespacing*{\section}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+% ============================================================================
+% HYPERREF SETUP
+% ============================================================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primaryblue,
+    filecolor=magenta,
+    urlcolor=primaryblue,
+    citecolor=primaryblue,
+}
+
+% ============================================================================
+% CUSTOM BOXES
+% ============================================================================
+\newtcolorbox{querybox}[1][]{
+    colback=blue!5!white,
+    colframe=primaryblue,
+    fonttitle=\bfseries,
+    title=Query #1,
+    boxrule=0.5pt,
+    arc=3pt,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=6pt
+}
+
+\newtcolorbox{analysisbox}[1][]{
+    colback=green!5!white,
+    colframe=green!60!black,
+    fonttitle=\bfseries,
+    title=Analysis #1,
+    boxrule=0.5pt,
+    arc=3pt,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=6pt
+}
+
+\newtcolorbox{resultbox}{
+    colback=gray!5!white,
+    colframe=secondarygray,
+    fonttitle=\bfseries,
+    title=Results \& Interpretation,
+    boxrule=0.5pt,
+    arc=3pt,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=6pt
+}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\title{
+    \vspace{-1cm}
+    \rule{\linewidth}{0.5mm}\\
+    \vspace{0.5cm}
+    {\Huge \bfseries Database Systems Lab — Week 04}\\
+    \vspace{0.3cm}
+    {\Large JOINs \& Relational Data Modelling}\\
+    \vspace{0.3cm}
+    \rule{\linewidth}{0.5mm}\\
+    \vspace{1cm}
+}
+
+\author{
+    \textbf{Student Name:} [Muhammad Ayyan Khan]\\
+    \textbf{Course:} Database Systems Lab (Data Science Program)\\
+    \textbf{Instructor:} Muhammad Usama Afridi\\
+    \textbf{Institute:} Institute of Management Sciences\\
+    \vspace{0.5cm}
+    \textbf{Date:} \today
+}
+
+\date{}
+
+% ============================================================================
+% DOCUMENT START
+% ============================================================================
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+% ============================================================================
+% TABLE OF CONTENTS
+% ============================================================================
+\tableofcontents
+\newpage
+
+% ============================================================================
+% SECTION 1: 10 QUERIES
+% ============================================================================
+\section{Section 1 — 10 Queries (35 points)}
+
+This section presents all 10 required queries with SQL code, result screenshots,
+and business-level interpretation.
+
+% ----------------------------------------------------------------------------
+% QUERY 1
+% ----------------------------------------------------------------------------
+\subsection{Query 1: Orders with Customer Names (INNER JOIN)}
+
+\begin{querybox}[1]
+\textbf{Objective:} Show order details with customer name and city instead of just customer\_id.
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 1: Orders with Customer Names}]
+SELECT o.order_id,
+       c.name        AS customer_name,
+       c.city,
+       o.order_date,
+       o.status,
+       o.total_amount
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id
+ORDER BY o.order_date DESC;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query1—Your-firs-join:-orders-with-customer-names.png}
+    \caption{Query 1 Results: Orders with Customer Names}
+    \label{fig:query1}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} This INNER JOIN connects the orders table to the customers
+table, replacing opaque customer\_id values with readable customer names and cities.
+The results show that orders are sorted by date (newest first), allowing business
+users to quickly identify recent transactions and their associated customers. This
+is the most common join pattern in analytics — connecting transaction tables to
+lookup/dimension tables.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 2
+% ----------------------------------------------------------------------------
+\subsection{Query 2: Full Order Receipt (4-Table Join)}
+
+\begin{querybox}[2]
+\textbf{Objective:} Produce a complete order receipt showing customer name, order date,
+product details, quantity, unit price, and line total.
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 2: Full Order Receipt}]
+SELECT c.name         AS customer,
+       o.order_id,
+       o.order_date,
+       o.status,
+       p.product_name,
+       p.category,
+       oi.quantity,
+       oi.unit_price,
+       oi.quantity * oi.unit_price AS line_total
+FROM order_items oi
+INNER JOIN orders o ON oi.order_id = o.order_id
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN products p ON oi.product_id = p.product_id
+ORDER BY o.order_id, p.category;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query2---Full-order-receipt.png}
+    \caption{Query 2 Results: Complete Order Receipt}
+    \label{fig:query2}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} This four-table join represents the complete transaction
+picture — the heart of any e-commerce analytics system. Every business report
+("What did customer X buy?", "How much did category Y sell?") starts from this
+exact join structure. The line\_total calculation (quantity × unit\_price) provides
+the revenue contribution of each item, essential for profitability analysis.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 3
+% ----------------------------------------------------------------------------
+\subsection{Query 3: Customers Who Have Never Ordered (LEFT JOIN)}
+
+\begin{querybox}[3]
+\textbf{Objective:} Find customers who signed up but have never placed any order
+(churn/re-engagement analysis).
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 3: Customers Who Never Ordered}]
+SELECT c.customer_id,
+       c.name,
+       c.email,
+       c.city,
+       c.signup_date
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_id IS NULL
+ORDER BY c.signup_date;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query3----Customers-who-have-never-ordered.png}
+    \caption{Query 3 Results: Customers Who Never Ordered}
+    \label{fig:query3}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} The LEFT JOIN + WHERE IS NULL pattern (called an "anti-join")
+identifies customers with zero orders. These are critical for business: they represent
+acquisition costs with no ROI. Marketing teams use this list for re-engagement campaigns.
+The signup\_date ordering helps prioritize recent signups who may just need a nudge.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 4
+% ----------------------------------------------------------------------------
+\subsection{Query 4: Products Never Ordered (LEFT JOIN)}
+
+\begin{querybox}[4]
+\textbf{Objective:} Find products that have never appeared in order\_items (inventory analysis).
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 4: Products Never Ordered}]
+SELECT p.product_id,
+       p.product_name,
+       p.category,
+       p.price,
+       p.stock_qty
+FROM products p
+LEFT JOIN order_items oi ON p.product_id = oi.product_id
+WHERE oi.item_id IS NULL
+ORDER BY p.category;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query4—Products-never-ordered(before).png}
+    \caption{Query 4 Results (Before): No Unsold Products}
+    \label{fig:query4-before}
+\end{figure}
+
+\subsubsection*{Verification: Adding a Test Product}
+
+Since all products had been ordered, I added a test product to verify the query works:
+
+\begin{lstlisting}[caption={Adding Test Product}]
+INSERT INTO products (product_name, category, price, stock_qty)
+VALUES ('Unsold Widget', 'Test Products', 99.99, 100);
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query4--Products-never-ordered(after)EXplain analyze.png}
+    \caption{Query 4 Results (After): Test Product Appears as Unsold}
+    \label{fig:query4-after}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} Products that never sell tie up inventory budget and warehouse
+space. In a real business, this query runs on a schedule to identify dead stock for
+clearance or discontinuation. The EXPLAIN ANALYZE output shows PostgreSQL using a
+Hash Left Join strategy, which is efficient for this type of anti-join pattern.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 5
+% ----------------------------------------------------------------------------
+\subsection{Query 5: Revenue by Customer with Join}
+
+\begin{querybox}[5]
+\textbf{Objective:} Show every customer's total orders and total spent, including
+customers who have never ordered (showing 0).
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 5: Revenue by Customer}]
+SELECT c.name,
+       c.city,
+       COUNT(o.order_id)              AS total_orders,
+       COALESCE(SUM(o.total_amount), 0) AS total_spent
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = c.customer_id
+GROUP BY c.customer_id, c.name, c.city
+ORDER BY total_spent DESC;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query5—Revenue-by-customer-with-join.png}
+    \caption{Query 5 Results: Revenue by Customer}
+    \label{fig:query5}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} This query combines aggregation (Week 3) with LEFT JOINs
+(Week 4). The COALESCE function ensures customers with no orders show 0 instead of
+NULL. Using COUNT(o.order\_id) instead of COUNT(*) correctly excludes NULL values
+from non-matching rows. This is a classic customer lifetime value (CLV) calculation.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 6
+% ----------------------------------------------------------------------------
+\subsection{Query 6: Best-Selling Products}
+
+\begin{querybox}[6]
+\textbf{Objective:} Find the top 5 products by total units sold with revenue.
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 6: Best-Selling Products}]
+SELECT p.product_name,
+       p.category,
+       p.price,
+       SUM(oi.quantity)                AS units_sold,
+       SUM(oi.quantity * oi.unit_price) AS total_revenue
+FROM products p
+INNER JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name, p.category, p.price
+ORDER BY units_sold DESC
+LIMIT 5;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query6—Best-selling-products.png}
+    \caption{Query 6 Results: Top 5 Best-Selling Products}
+    \label{fig:query6}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} This identifies the most popular products by volume and
+revenue. The GROUP BY includes all non-aggregated columns (required in PostgreSQL).
+Business use: inventory planning (stock more of top sellers), marketing (feature
+these products), and supplier negotiations (leverage high-volume purchases).
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 7
+% ----------------------------------------------------------------------------
+\subsection{Query 7: City-Level Sales Report}
+
+\begin{querybox}[7]
+\textbf{Objective:} For each city, show customer count, order count, total revenue,
+and average order value.
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 7: City-Level Sales Report}]
+SELECT c.city,
+       COUNT(DISTINCT c.customer_id) AS num_customers,
+       COUNT(DISTINCT o.order_id)    AS num_orders,
+       SUM(o.total_amount)           AS total_revenue,
+       ROUND(AVG(o.total_amount), 2) AS avg_order_value
+FROM customers c
+INNER JOIN orders o ON c.customer_id = c.customer_id
+GROUP BY c.city
+ORDER BY total_revenue DESC;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query7—City-level-sales-report.png}
+    \caption{Query 7 Results: City-Level Sales Report}
+    \label{fig:query7}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} Geographic analysis reveals market penetration and regional
+preferences. COUNT(DISTINCT) prevents double-counting customers with multiple orders.
+High-revenue cities may deserve targeted marketing or physical store expansion.
+Low-revenue cities with many customers indicate low average spend — a pricing or
+product mix issue.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 8
+% ----------------------------------------------------------------------------
+\subsection{Query 8: Order Details with Status Filter}
+
+\begin{querybox}[8]
+\textbf{Objective:} Show delivered orders from 2025, grouped by customer with
+product diversity and spend metrics.
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 8: Order Details with Status Filter}]
+SELECT c.name                              AS customer,
+       c.city,
+       COUNT(DISTINCT p.product_id)        AS distinct_products_bought,
+       SUM(oi.quantity)                    AS total_items,
+       SUM(oi.quantity * oi.unit_price)    AS total_spent
+FROM order_items oi
+INNER JOIN orders o ON oi.order_id = o.order_id
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN products p ON oi.product_id = p.product_id
+WHERE o.status = 'delivered'
+  AND o.order_date >= '2025-01-01'
+GROUP BY c.customer_id, c.name, c.city
+ORDER BY total_spent DESC;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query8—Order-details-with-status-filter.png}
+    \caption{Query 8 Results: Delivered Orders from 2025}
+    \label{fig:query8}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} This combines joins, WHERE filters, GROUP BY, and aggregates
+in one query. Filtering to 'delivered' status ensures we analyze completed transactions
+only. The distinct\_products\_bought metric shows product diversity — high values
+indicate customers exploring the catalog vs. repeat buyers of the same items.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 9
+% ----------------------------------------------------------------------------
+\subsection{Query 9: Session and Purchase Behaviour Together}
+
+\begin{querybox}[9]
+\textbf{Objective:} For every customer with sessions, show session count, orders,
+total spent, and conversion status.
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 9: Session and Purchase Behaviour}]
+SELECT c.name,
+       c.city,
+       COUNT(DISTINCT s.session_id)       AS total_sessions,
+       COUNT(DISTINCT o.order_id)         AS total_orders,
+       COALESCE(SUM(DISTINCT o.total_amount), 0) AS total_spent,
+       CASE
+           WHEN COUNT(DISTINCT o.order_id) > 0 THEN 'Converted'
+           ELSE 'Not Converted'
+       END                                AS customer_status
+FROM customers c
+INNER JOIN user_sessions s ON c.customer_id = s.customer_id
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+       AND o.status = 'delivered'
+GROUP BY c.customer_id, c.name, c.city
+ORDER BY total_sessions DESC;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query9—Session-and-purchase-behaviour-together.png}
+    \caption{Query 9 Results: Session and Purchase Behaviour}
+    \label{fig:query9}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} This query connects browsing behaviour (sessions) to
+purchases (orders). The filter on o.status is in the ON clause (not WHERE) to
+preserve the LEFT JOIN behaviour. High sessions with no conversion indicates
+UX/pricing problems. This is the foundation for conversion rate optimization.
+\end{resultbox}
+
+% ----------------------------------------------------------------------------
+% QUERY 10
+% ----------------------------------------------------------------------------
+\subsection{Query 10: FULL OUTER JOIN — Data Completeness Audit}
+
+\begin{querybox}[10]
+\textbf{Objective:} Identify mismatches between customers and user\_sessions tables
+(data quality audit).
+\end{querybox}
+
+\begin{lstlisting}[caption={Query 10: Data Completeness Audit}]
+SELECT c.customer_id                     AS customer_table_id,
+       c.name,
+       s.customer_id                     AS session_table_cust_id,
+       COUNT(s.session_id)               AS session_count,
+       CASE
+           WHEN c.customer_id IS NULL THEN 'Orphaned session — no customer record'
+           WHEN s.customer_id IS NULL THEN 'Customer with no sessions'
+           ELSE 'Matched'
+       END                               AS audit_status
+FROM customers c
+FULL OUTER JOIN user_sessions s ON c.customer_id = s.customer_id
+GROUP BY c.customer_id, c.name, s.customer_id
+ORDER BY audit_status, c.name;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/Query10—FULL-OUTER-JOIN:-data-completeness-audit.png}
+    \caption{Query 10 Results: Data Completeness Audit}
+    \label{fig:query10}
+\end{figure}
+
+\begin{resultbox}
+\textbf{Interpretation:} FULL OUTER JOIN returns all rows from both tables, revealing
+data integrity issues. "Orphaned sessions" indicate tracking bugs or deleted accounts.
+"Customers with no sessions" may be legitimate (phone orders) or indicate tracking gaps.
+This audit should run before any analysis to ensure data quality.
+\end{resultbox}
+
+% ============================================================================
+% SECTION 2: ER DIAGRAM
+% ============================================================================
+
+
+% NOTE: If you have an ER diagram image, uncomment the figure below and add the image to pdf/ folder
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.85\textwidth]{pdf/ER-Diagram.png}
+%     \caption{Entity-Relationship Diagram: E-Commerce Schema}
+%     \label{fig:er-diagram}
+% \end{figure}
+
+\subsection*{Entity-Relationship Diagram (Text Representation)}
+
+\begin{tcolorbox}[colback=white,colframe=primaryblue,title=ER Diagram,coltitle=white]
+\footnotesize
+\begin{verbatim}
++------------------+       +------------------+       +------------------+
+|    CUSTOMERS     |       |     ORDERS       |       |   ORDER_ITEMS    |
++------------------+       +------------------+       +------------------+
+| PK customer_id   |<------| FK customer_id   |       | FK order_id      |
+|    name          |  1:N  | PK order_id      |  1:N  | FK product_id    |
+|    email         |       |    order_date    |------>|    quantity      |
+|    city          |       |    status        |       |    unit_price    |
+|    signup_date   |       |    total_amount  |       +------------------+
++------------------+       |    shipped_date  |                ^
+         ^                 +------------------+                | 1:N
+         |                                                    |
+         | 1:N                                                |
+         |                                          +------------------+
+         |                                          |    PRODUCTS      |
+         |                                          +------------------+
+         |                                          | PK product_id    |
+         +------------------------------------------|    product_name  |
+                    1:N                             |    category      |
+                                                    |    price         |
++------------------+                                |    stock_qty     |
+|  USER_SESSIONS   |                                +------------------+
++------------------+
+| PK session_id    |
+| FK customer_id   |
+|    session_date  |
+|    device        |
+|    converted     |
++------------------+
+\end{verbatim}
+\end{tcolorbox}
+
+\textbf{Relationships:}
+\begin{itemize}[leftmargin=*,noitemsep,topsep=3pt]
+    \item \textbf{customers → orders:} One-to-Many (one customer can place many orders)
+    \item \textbf{orders → order\_items:} One-to-Many (one order contains many items)
+    \item \textbf{products → order\_items:} One-to-Many (one product can appear in many order items)
+    \item \textbf{customers → user\_sessions:} One-to-Many (one customer can have many sessions)
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Primary Keys (PK):} customer\_id, order\_id, item\_id, product\_id, session\_id
+
+\vspace{0.3cm}
+\textbf{Foreign Keys (FK):}
+\begin{itemize}[leftmargin=*,noitemsep,topsep=3pt]
+    \item orders.customer\_id → customers.customer\_id
+    \item order\_items.order\_id → orders.order\_id
+    \item order\_items.product\_id → products.product\_id
+    \item user\_sessions.customer\_id → customers.customer\_id
+\end{itemize}
+
+% ============================================================================
+% SECTION 3: NORMALISATION REFLECTION
+% ============================================================================
+\section{Section 3 — Normalisation Reflection (15 points)}
+
+\begin{tcolorbox}[
+    colback=white,
+    colframe=secondarygray,
+    fonttitle=\bfseries,
+    title=Option (b): Is the user\_sessions table in 3NF?,
+    boxrule=0.5pt,
+    arc=3pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt
+]
+
+\subsection*{Analysis: user\_sessions Table Normalisation}
+
+The \textbf{user\_sessions} table has the following structure:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=3pt]
+    \item session\_id (PK)
+    \item customer\_id (FK → customers.customer\_id)
+    \item session\_date
+    \item device
+    \item converted
+\end{itemize}
+
+To determine if this table is in Third Normal Form (3NF), we verify three conditions:
+
+\subsubsection*{1. First Normal Form (1NF) ✓}
+The table satisfies 1NF because:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+    \item Each column contains atomic (single) values
+    \item There are no repeating groups
+    \item Each row is uniquely identifiable by session\_id
+    \item No column contains multiple values like "device1, device2" in one cell
+\end{itemize}
+
+\subsubsection*{2. Second Normal Form (2NF) ✓}
+The table satisfies 2NF because:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+    \item The primary key is a single column (session\_id), not composite
+    \item All non-key columns (customer\_id, session\_date, device, converted) depend on the entire primary key
+    \item There is no partial dependency issue since the key is not composite
+\end{itemize}
+
+\subsubsection*{3. Third Normal Form (3NF) ✓}
+The table satisfies 3NF because:
+\begin{itemize}[leftmargin=*,noitemsep,topsep=2pt]
+    \item All non-key columns depend only on the primary key (session\_id)
+    \item There are no transitive dependencies
+    \item customer\_id is a foreign key, which is allowed in 3NF
+    \item session\_date, device, and converted all describe the session itself, not some other non-key attribute
+    \item No column can be derived from another non-key column
+\end{itemize}
+
+\subsection*{Conclusion}
+
+\textbf{Yes, the user\_sessions table IS in Third Normal Form (3NF).}
+
+\textbf{Justification:}
+\begin{itemize}[leftmargin=*,noitemsep,topsep=3pt]
+    \item Every attribute depends on the primary key (session\_id)
+    \item The foreign key customer\_id correctly references the customers table
+    \item There are no derived columns (e.g., we don't store customer\_name here)
+    \item There are no transitive dependencies (e.g., device does not determine any other column)
+\end{itemize}
+
+
+\end{tcolorbox}
+
+% ============================================================================
+% SECTION 4: AI LEARNING LOG
+% ============================================================================
+\section{Section 4 — AI Learning Log (20 points)}
+
+\subsection*{Entry 1: Debugging GROUP BY Error}
+
+\textbf{Problem:} Query returned error: "column must appear in the GROUP BY clause
+or be used in an aggregate function"
+
+\textbf{Wrong Query:}
+\begin{lstlisting}
+SELECT p.product_name, p.category, p.price,
+       SUM(oi.quantity) AS units_sold,
+       SUM(oi.quantity * oi.unit_price) AS total_revenue
+FROM products p
+INNER JOIN order_items oi ON p.product_id = oi.product_id
+ORDER BY units_sold DESC
+LIMIT 5;
+\end{lstlisting}
+
+\textbf{AI Interaction:} Asked why the error occurred.
+
+\textbf{Learning:} When using aggregate functions (SUM, COUNT, AVG), ALL non-aggregated
+columns in SELECT must appear in GROUP BY. PostgreSQL is strict about this.
+
+\textbf{Corrected Query:}
+\begin{lstlisting}
+SELECT p.product_name, p.category, p.price,
+       SUM(oi.quantity) AS units_sold,
+       SUM(oi.quantity * oi.unit_price) AS total_revenue
+FROM products p
+INNER JOIN order_items oi ON p.product_id = oi.product_id
+GROUP BY p.product_id, p.product_name, p.category, p.price
+ORDER BY units_sold DESC
+LIMIT 5;
+\end{lstlisting}
+
+\subsection*{Entry 2: INNER JOIN vs LEFT JOIN Confusion}
+
+\textbf{Problem:} Didn't understand when to use INNER vs LEFT JOIN for customer analysis.
+
+\textbf{AI Interaction:} Asked for explanation of the difference with specific examples.
+
+\textbf{Learning:}
+\begin{itemize}[leftmargin=*,noitemsep]
+    \item \textbf{INNER JOIN:} Only returns matching rows. Customers with no orders disappear.
+    \item \textbf{LEFT JOIN:} Returns ALL left table rows. Non-matching right columns become NULL.
+    \item Use LEFT JOIN when you need to include "zero" cases (customers who never ordered).
+\end{itemize}
+
+\subsection*{Entry 3: WHERE in ON Clause vs WHERE Clause}
+
+\textbf{Problem:} Query 9 was excluding non-converted customers unexpectedly.
+
+\textbf{Wrong Approach:}
+\begin{lstlisting}
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.status = 'delivered'  -- This turns LEFT JOIN into INNER JOIN!
+\end{lstlisting}
+
+\textbf{AI Interaction:} Asked why LEFT JOIN wasn't preserving all customers.
+
+\textbf{Learning:} Filters on the RIGHT table of a LEFT JOIN must go in the ON clause,
+not WHERE. WHERE filters AFTER the join, eliminating NULL rows you wanted to keep.
+
+\textbf{Corrected:}
+\begin{lstlisting}
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+                    AND o.status = 'delivered'  -- Correct!
+\end{lstlisting}
+
+% ============================================================================
+% SECTION 5: REFLECTION
+% ============================================================================
+\newpage
+\section{Section 5 — Reflection (10 points)}
+
+\subsection*{INNER JOIN vs LEFT JOIN: Understanding the Difference}
+
+The fundamental difference between INNER JOIN and LEFT JOIN is about \textbf{inclusion}.
+INNER JOIN is exclusive — it only returns rows where there's a match in both tables.
+If a customer has never placed an order, an INNER JOIN between customers and orders
+simply excludes that customer from the results. They become invisible. LEFT JOIN is
+inclusive — it returns ALL rows from the left table regardless of whether there's a
+match. Unmatched rows get NULL values for the right table's columns, but they appear.
+
+I would use INNER JOIN when I only care about existing relationships: "Show me all
+orders with their customers" (I don't need orphaned orders). I would use LEFT JOIN
+when I need to find gaps or include zero cases: "Show me ALL customers with their
+order counts" (including customers with zero orders).
+
+\subsection*{Most Surprising Discovery}
+
+The most surprising thing I discovered was how much insight is hidden in the
+\textbf{absence} of relationships. Looking at individual tables, I could see
+customers existed and orders existed. But only by joining them with LEFT JOIN
+and filtering for NULLs did I discover that some customers had never ordered.
+Similarly, products that had never been ordered only became visible through the
+anti-join pattern. This changed my perspective: the most valuable business insights
+often come from finding what's \textit{not} there — customers who churned, products
+that don't sell, sessions that didn't convert. JOINs are not just about connecting
+data; they're about revealing the gaps that drive business decisions.
+
+The FULL OUTER JOIN audit was particularly eye-opening. I had assumed the database
+would be perfectly consistent, but the possibility of orphaned records (sessions
+without customers, customers without sessions) revealed that real-world data
+pipelines have bugs. Data quality is not guaranteed — it must be audited.
+
+% ============================================================================
+% APPENDIX: PERFORMANCE ANALYSIS
+% ============================================================================
+\newpage
+\section*{Appendix: Performance Analysis (EXPLAIN ANALYZE)}
+
+\subsection*{Query 2 Execution Plan}
+
+\begin{lstlisting}[caption={EXPLAIN ANALYZE for Query 2}]
+EXPLAIN ANALYZE
+SELECT c.name, o.order_id, o.order_date, o.status,
+       p.product_name, p.category, oi.quantity, oi.unit_price,
+       oi.quantity * oi.unit_price AS line_total
+FROM order_items oi
+INNER JOIN orders o ON oi.order_id = o.order_id
+INNER JOIN customers c ON o.customer_id = c.customer_id
+INNER JOIN products p ON oi.product_id = p.product_id
+ORDER BY o.order_id, p.category;
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pdf/EXPLAIN-ANALYZE.png}
+    \caption{Query 2 Execution Plan}
+    \label{fig:explain-analyze}
+\end{figure}
+
+\textbf{Operations Observed:}
+\begin{itemize}[leftmargin=*,noitemsep]
+    \item \textbf{Sort:} PostgreSQL sorts the final result by order\_id and category.
+    \item \textbf{Hash Join:} Builds a hash table from one side and probes it for matches.
+    Much faster than Nested Loop for large datasets.
+    \item \textbf{Seq Scan:} Sequential scan reads entire tables (acceptable for small data).
+\end{itemize}
+
+On this small dataset, PostgreSQL chooses efficient hash joins. On millions of rows,
+it would still use hash joins but might add parallel execution and index scans.
+
+% ============================================================================
+% BIBLIOGRAPHY
+% ============================================================================
+\newpage
+\begin{thebibliography}{9}
+\bibitem{week4manual}
+Afridi, M. U. (2025). \textit{Database Systems Lab — Week 04 Manual: JOINs \& Relational Data Modelling}. Institute of Management Sciences.
+
+\end{thebibliography}
+
+\end{document}
