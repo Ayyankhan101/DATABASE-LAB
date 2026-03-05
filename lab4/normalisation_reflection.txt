@@ -1,0 +1,75 @@
+================================================================================
+              NORMALISATION REFLECTION — Lab 4 Deliverable
+                   Database Systems Lab (Week 04)
+================================================================================
+
+Option (b): Is the user_sessions table in 3NF?
+
+--------------------------------------------------------------------------------
+ANALYSIS: user_sessions Table Normalisation
+--------------------------------------------------------------------------------
+
+The user_sessions table has the following structure:
+- session_id (PK)
+- customer_id (FK → customers.customer_id)
+- session_date
+- device
+- converted
+
+To determine if this table is in Third Normal Form (3NF), we need to verify
+three conditions:
+
+1. FIRST NORMAL FORM (1NF):
+   ✓ The table satisfies 1NF because:
+     - Each column contains atomic (single) values
+     - There are no repeating groups
+     - Each row is uniquely identifiable by session_id
+     - No column contains multiple values like "device1, device2" in one cell
+
+2. SECOND NORMAL FORM (2NF):
+   ✓ The table satisfies 2NF because:
+     - The primary key is a single column (session_id), not composite
+     - All non-key columns (customer_id, session_date, device, converted)
+       depend on the entire primary key
+     - There is no partial dependency issue since the key is not composite
+
+3. THIRD NORMAL FORM (3NF):
+   ✓ The table satisfies 3NF because:
+     - All non-key columns depend only on the primary key (session_id)
+     - There are no transitive dependencies
+     - customer_id is a foreign key, which is allowed in 3NF
+     - session_date, device, and converted all describe the session itself,
+       not some other non-key attribute
+     - No column can be derived from another non-key column
+
+--------------------------------------------------------------------------------
+CONCLUSION
+--------------------------------------------------------------------------------
+
+Yes, the user_sessions table IS in Third Normal Form (3NF).
+
+Justification:
+- Every attribute depends on the primary key (session_id)
+- The foreign key customer_id correctly references the customers table
+- There are no derived columns (e.g., we don't store customer_name here)
+- There are no transitive dependencies (e.g., device does not determine
+  any other column)
+
+Potential improvements (not required for 3NF but worth considering):
+
+1. If we needed to track device types for analytics, we could create a
+   separate "devices" lookup table with device_id and device_name. This
+   would be useful if device values need standardization (e.g., "iPhone",
+   "iphone", "Apple iPhone" should all be the same). However, this is
+   optional and depends on business requirements.
+
+2. If we needed to track why a session converted (e.g., which product or
+   campaign), we might add a conversion_reason column. But this would
+   still maintain 3NF as long as it depends only on session_id.
+
+The current design is appropriately normalised for an e-commerce session
+tracking system.
+
+--------------------------------------------------------------------------------
+WORD COUNT: Approximately 350 words
+--------------------------------------------------------------------------------

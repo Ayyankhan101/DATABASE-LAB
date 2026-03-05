@@ -1,0 +1,99 @@
+================================================================================
+                    ER DIAGRAM - E-Commerce Database Schema
+                         Lab 4: JOINs & Relational Design
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                 CUSTOMERS                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  PK  customer_id      INTEGER                                               │
+│      name             VARCHAR                                               │
+│      email            VARCHAR                                               │
+│      city             VARCHAR                                               │
+│      signup_date      DATE                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+           │                                    │
+           │ 1:N                                │ 1:N
+           │                                    │
+           ▼                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                  ORDERS                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  PK  order_id         INTEGER                                               │
+│  FK  customer_id      INTEGER  ───────────────► references customers        │
+│      order_date       DATE                                                  │
+│      status           VARCHAR                                               │
+│      total_amount     DECIMAL                                               │
+│      shipped_date     DATE                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+           │
+           │ 1:N
+           │
+           ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                               ORDER_ITEMS                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  PK  item_id          INTEGER                                               │
+│  FK  order_id         INTEGER  ───────────────► references orders           │
+│  FK  product_id       INTEGER  ───────────────► references products         │
+│      quantity         INTEGER                                               │
+│      unit_price       DECIMAL                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+           ▲
+           │ 1:N
+           │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                 PRODUCTS                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  PK  product_id       INTEGER                                               │
+│      product_name     VARCHAR                                               │
+│      category         VARCHAR                                               │
+│      price            DECIMAL                                               │
+│      stock_qty        INTEGER                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              USER_SESSIONS                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  PK  session_id       INTEGER                                               │
+│  FK  customer_id      INTEGER  ───────────────► references customers        │
+│      session_date     DATE                                                  │
+│      device           VARCHAR                                               │
+│      converted        BOOLEAN                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                         RELATIONSHIP SUMMARY
+================================================================================
+
+1. CUSTOMERS → ORDERS (One-to-Many)
+   - One customer can place many orders
+   - Each order belongs to exactly one customer
+   - Foreign key: orders.customer_id → customers.customer_id
+
+2. ORDERS → ORDER_ITEMS (One-to-Many)
+   - One order can contain many items
+   - Each order_item belongs to exactly one order
+   - Foreign key: order_items.order_id → orders.order_id
+
+3. PRODUCTS → ORDER_ITEMS (One-to-Many)
+   - One product can appear in many order_items
+   - Each order_item references exactly one product
+   - Foreign key: order_items.product_id → products.product_id
+
+4. CUSTOMERS → USER_SESSIONS (One-to-Many)
+   - One customer can have many sessions
+   - Each session belongs to exactly one customer
+   - Foreign key: user_sessions.customer_id → customers.customer_id
+
+================================================================================
+                              NOTATION KEY
+================================================================================
+   PK  = Primary Key (uniquely identifies each row)
+   FK  = Foreign Key (references another table's primary key)
+   1:N = One-to-Many relationship
+   ►   = References/points to
+
+================================================================================

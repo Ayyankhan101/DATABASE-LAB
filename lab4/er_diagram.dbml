@@ -1,0 +1,50 @@
+// ER Diagram for E-commerce Database Schema
+// Lab 4 - Database Systems Lab
+// Use with dbdiagram.io or similar tool to visualize
+
+Table customers {
+  customer_id integer [PK]
+  name varchar
+  email varchar
+  city varchar
+  signup_date date
+}
+
+Table orders {
+  order_id integer [PK]
+  customer_id integer [FK, ref: > customers.customer_id]
+  order_date date
+  status varchar
+  total_amount decimal
+  shipped_date date
+}
+
+Table order_items {
+  item_id integer [PK]
+  order_id integer [FK, ref: > orders.order_id]
+  product_id integer [FK, ref: > products.product_id]
+  quantity integer
+  unit_price decimal
+}
+
+Table products {
+  product_id integer [PK]
+  product_name varchar
+  category varchar
+  price decimal
+  stock_qty integer
+}
+
+Table user_sessions {
+  session_id integer [PK]
+  customer_id integer [FK, ref: > customers.customer_id]
+  session_date date
+  device varchar
+  converted boolean
+}
+
+// Relationships:
+// customers ||--o{ orders : "one customer can have many orders"
+// orders ||--o{ order_items : "one order can have many items"
+// products ||--o{ order_items : "one product can be in many order items"
+// customers ||--o{ user_sessions : "one customer can have many sessions"
