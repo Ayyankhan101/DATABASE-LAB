@@ -28,7 +28,7 @@ The coursework encompasses fundamental database concepts through advanced analyt
 ## Repository Structure
 ```
 DATABASE-LAB/
-├── README.md                 # Project documentation
+├── README.md                 # Project documentation (this file)
 ├── ai_learning_log.txt       # AI-assisted learning progression
 ├── analytical_queries.txt    # Advanced analytical queries
 ├── lab01_db.sql             # Laboratory exercise 1
@@ -46,6 +46,17 @@ DATABASE-LAB/
 │   ├── week3.pdf            # Lab instructions
 │   ├── lab3_report.*        # LaTeX report files (tex, pdf, aux, log, toc, out)
 │   └── pdf/                 # Query result screenshots
+├── lab4/                     # Laboratory exercise 4 (NEW)
+│   ├── README.md            # Lab 04 comprehensive documentation
+│   ├── queries.sql          # 10 JOIN-based SQL queries
+│   ├── er_diagram.dbml      # ER diagram in DBML format
+│   ├── normalisation_reflection.txt  # 3NF analysis document
+│   ├── week4.pdf            # Lab instructions
+│   └── pdf/                 # Query screenshots and LaTeX report
+│       ├── Lab04_Report.pdf # Compiled lab report
+│       ├── Lab04_Report.tex # LaTeX source
+│       ├── er_diagram.txt   # Text-based ER diagram
+│       └── Query*.png       # 10 query result screenshots
 ├── pdf/                     # Lab 01 documentation
 │   ├── Lab01_Ayyan_DS2024001.tex  # Lab 01 LaTeX report
 │   ├── Lab01_Ayyan.pdf      # Compiled PDF
@@ -85,12 +96,30 @@ DATABASE-LAB/
 - **Documentation:** `lab3/lab3_report.tex`, `lab3/performance_analysis.md`, `lab3/README.md`
 - **Focus Areas:**
   - Advanced JOIN operations
-  - Window functions (ROW_NUMBER, RANK, LAG)
+  - Window functions (ROW_NUMBER, RANK, LAG, LEAD)
   - Common Table Expressions (CTEs)
   - HAVING clause for aggregated filtering
   - Revenue and business metrics analysis
   - Query performance evaluation
 - **Dataset:** E-commerce analytics with session data, orders, and customer behavior
+
+### Lab 04: JOINs & Relational Data Modelling (NEW)
+- **Files:** `lab4/queries.sql`, `lab4/er_diagram.dbml`, `lab4/normalisation_reflection.txt`
+- **Documentation:** `lab4/README.md`, `lab4/pdf/Lab04_Report.pdf`
+- **Focus Areas:**
+  - INNER JOIN, LEFT JOIN, and FULL OUTER JOIN operations
+  - Multi-table joins (up to 4 tables)
+  - Anti-join patterns for finding missing data
+  - JOINs combined with aggregation and filtering
+  - Data completeness audits
+  - Query execution plans with EXPLAIN ANALYZE
+  - Database normalization analysis (3NF)
+- **Dataset:** Enhanced e-commerce schema with customers, orders, order_items, products, and user_sessions
+- **Key Deliverables:**
+  - 10 SQL queries demonstrating various JOIN patterns
+  - ER diagram in DBML format (compatible with dbdiagram.io)
+  - Normalisation reflection analyzing user_sessions table (3NF)
+  - Professional LaTeX report with query visualizations
 
 ---
 
@@ -156,6 +185,21 @@ The `analytical_queries.txt` file contains sophisticated SQL queries designed to
 ---
 
 ## Learning Progression
+
+### Skills Developed Across Labs
+
+| Lab | Key SQL Concepts | Business Applications |
+|-----|------------------|----------------------|
+| **Lab 01** | Schema design, CRUD, constraints | Database fundamentals |
+| **Lab 02** | SELECT, WHERE, LIKE, CASE, aggregates | Basic e-commerce queries |
+| **Lab 03** | Window functions, CTEs, HAVING | Advanced analytics, time-series analysis |
+| **Lab 04** | JOINs (INNER, LEFT, FULL OUTER), EXPLAIN ANALYZE | Relational modelling, data audits |
+
+### Progressive Complexity
+- **Lab 01 → Lab 02:** From schema creation to data querying
+- **Lab 02 → Lab 03:** From basic queries to advanced analytics
+- **Lab 03 → Lab 04:** From single-table analytics to multi-table relational operations
+
 The `ai_learning_log.txt` file documents the learning journey and progressive skill development throughout the course, including:
 - Problem-solving approaches
 - Technical challenges encountered
@@ -173,3 +217,5 @@ This repository represents original academic work completed for the Database Sys
 This repository is designated for educational and academic purposes only. Distribution or reproduction for commercial purposes is prohibited without explicit written consent.
 
 ---
+
+**Last Updated:** March 5, 2026
